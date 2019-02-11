@@ -55,7 +55,7 @@ class PrometheusQueryCtrl extends QueryCtrl {
 
   onChange = (nextQuery: PromQuery) => {
     console.log('change expression', nextQuery.expr);
-    this.target = nextQuery;
+    this.target = { ...nextQuery };
   };
 
   refreshMetricData = () => {

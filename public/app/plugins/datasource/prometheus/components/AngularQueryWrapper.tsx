@@ -13,31 +13,17 @@ interface Props {
   query: PromQuery;
 }
 
-interface State {
-  query: PromQuery;
-  edited: boolean;
-}
-
 /**
  * Angular wrapper around the Prometheus query field
  */
-class Editor extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      edited: false,
-      query: props.query,
-    };
-  }
-
+class Editor extends Component<Props> {
   handleChangeQuery = (nextQuery: PromQuery) => {
     const { index, change } = this.props;
-    let { query } = this.state;
+    let { query } = this.props;
     const edited = query.expr !== nextQuery.expr;
-    query = { ...query, expr: nextQuery.expr };
-    this.setState({ edited, query });
-    if (change) {
-      change(nextQuery, index);
+    if (edited && change) {
+      query = { ...query, expr: nextQuery.expr };
+      change(query, index);
     }
   };
 
@@ -49,14 +35,13 @@ class Editor extends Component<Props, State> {
   };
 
   render() {
-    const { datasource } = this.props;
-    const { edited, query } = this.state;
+    const { datasource, query } = this.props;
 
     return (
       <div className="gf-form-input" style={{ height: 'initial' }}>
         <PromQueryField
           datasource={datasource}
-          query={edited ? null : query}
+          query={query}
           onQueryChange={this.handleChangeQuery}
           onExecuteQuery={this.handlePressEnter}
           history={[]}
